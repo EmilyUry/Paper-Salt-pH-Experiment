@@ -12,8 +12,14 @@ data$Site <- as.factor(data$Site)
 data$pH_treat <- as.factor(data$pH_treat)
 data$Sal_treat <- as.factor(data$Sal_treat)
 
+SUVA_perc_init <- data$SUVA254_init/data$DOC_mg_L_init*100
+SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
+
+phenol_perc_init <- data$Phenol_mg_L_init/data$DOC_mg_L_init*100
+phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
+
 sdata <- data[which(data$pH_n == 'n'),]
-data <- data[which(data$Sal_treat == 0),]
+pdata <- data[which(data$Sal_treat == 0),]
 
 par(mar = c(5,6,2,2))
 
@@ -30,9 +36,9 @@ axis(1, c(1.5, 4.5, 7.5), c("5.5", "7.2", "8.8"))
 
 ## Phenol initial rinse
 ## outlier (11,12)
-data[11,12] <- NA
-data[11,13] <- NA
-boxplot(Phenol_mg_L_init~Site*pH_treat, data, col = c("gray40", "white"),
+pdata[11,12] <- NA
+pdata[11,13] <- NA
+boxplot(Phenol_mg_L_init~Site*pH_treat, pdata, col = c("gray40", "white"),
         ylab = "Phenolic compounds (mg/L)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,4))
@@ -42,10 +48,7 @@ axis(1, c(1.5, 4.5, 7.5), c("5.5", "7.2", "8.8"))
 
 
 #### percent phenol
-phenol_perc_init <- data$Phenol_mg_L_init/data$DOC_mg_L_init*100
-phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
-
-boxplot(phenol_perc_init~Site*pH_treat, data, 
+boxplot(phenol_perc_init~Site*pH_treat, pdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
@@ -55,7 +58,7 @@ legend("topleft", c("Acidic Site", "Cypress Swamp"), ncol = 2,
 axis(1, c(1.5, 4.5, 7.5), c("5.5", "7.2", "8.8"))
 
 ### absolute SUVA254
-boxplot(SUVA254_init~Site*pH_treat, data, col = c("gray40", "white"),
+boxplot(SUVA254_init~Site*pH_treat, pdata, col = c("gray40", "white"),
         ylab = "SUVA254 (abs.)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,0.2))
@@ -65,10 +68,7 @@ axis(1, c(1.5, 4.5, 7.5), c("5.5", "7.2", "8.8"))
 
 
 #### percent SUVA254
-SUVA_perc_init <- data$SUVA254_init/data$DOC_mg_L_init*100
-SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
-
-boxplot(SUVA_perc_init~Site*pH_treat, data, col = c("gray40", "white"),
+boxplot(SUVA_perc_init~Site*pH_treat, pdata, col = c("gray40", "white"),
         ylab = "SUVA254 per mg/L DOC", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,1))
@@ -130,34 +130,34 @@ boxplot(SUVA_perc_end~Site*Sal_treat, sdata,
 
 ### FIGURE 1B
 par(mfrow = c(3,2), mar = c(0.5,2,0.5,1))
-boxplot(DOC_mg_L_init~Site*pH_treat, data,
+boxplot(DOC_mg_L_init~Site*pH_treat, pdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "DOC (mg/L)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,20))
-boxplot(DOC_mg_L_end~Site*pH_treat, data, 
+boxplot(DOC_mg_L_end~Site*pH_treat, pdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "DOC (mg/L)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,75))
 
-boxplot(phenol_perc_init~Site*pH_treat, data, 
+boxplot(phenol_perc_init~Site*pH_treat, pdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,20))
-boxplot(phenol_perc_end~Site*pH_treat, data, 
+boxplot(phenol_perc_end~Site*pH_treat, pdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,20))
 
-boxplot(SUVA_perc_init~Site*pH_treat, data,
+boxplot(SUVA_perc_init~Site*pH_treat, pdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "SUVA254 per mg/L DOC", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
         ylim = c(0,1.5))
-boxplot(SUVA_perc_end~Site*pH_treat, data,
+boxplot(SUVA_perc_end~Site*pH_treat, pdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "SUVA254 per mg/L DOC", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
@@ -168,12 +168,24 @@ boxplot(SUVA_perc_end~Site*pH_treat, data,
 ######### MANOVA
 
 #Test for normalcy in the dependent variables
-
+install.packages(("mvnormtest"))
 library(mvnormtest)
-data(EuStockMarkets)
-C <- t(EuStockMarkets[15:29,1:4])
-mshapiro.test(C)
+a <- data$DOC_mg_L_end[which(data$Site == "3")]
+b <- data$DOC_mg_L_end[which(data$Site == "5")]
+U <- t(data.frame(a,b))
+mshapiro.test(U)
 
+
+### our data for the init case is probably not normally distributed (!)
+
+### MANOVA
+
+doc <- sdata$DOC_mg_L_init
+doc2 <- sdata$DOC_mg_L_end
+
+res.man <- manova(cbind(doc, doc2) ~ Site, data = sdata)
+summary(res.man)
+summary.aov(res.man)
 
 
 
