@@ -1,4 +1,6 @@
-
+library(ggplot2)
+library(ggpubr)
+library(multcomp)
 
 ## Chapter 4
 
@@ -12,11 +14,16 @@ data$Site <- as.factor(data$Site)
 data$pH_treat <- as.factor(data$pH_treat)
 data$Sal_treat <- as.factor(data$Sal_treat)
 
-SUVA_perc_init <- data$SUVA254_init/data$DOC_mg_L_init*100
-SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
+##outlier removal
+data[11,12] <- NA
+data[11,13] <- NA
 
-phenol_perc_init <- data$Phenol_mg_L_init/data$DOC_mg_L_init*100
-phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
+
+data$SUVA_perc_init <- data$SUVA254_init/data$DOC_mg_L_init*100
+data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
+
+data$phenol_perc_init <- data$Phenol_mg_L_init/data$DOC_mg_L_init*100
+data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
 
 sdata <- data[which(data$pH_n == 'n'),]
 pdata <- data[which(data$Sal_treat == 0),]
@@ -85,7 +92,7 @@ axis(1, c(1.5, 4.5, 7.5), c("5.5", "7.2", "8.8"))
 
 ### FIGURE 1A
 par(mfrow = c(3,2), mar = c(0.5,2,0.5,1))
-boxplot(DOC_mg_L_init~Site*Sal_treat, sdata,
+{boxplot(DOC_mg_L_init~Site*Sal_treat, sdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "DOC (mg/L)", xlab = "Salinity Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
@@ -94,30 +101,30 @@ boxplot(DOC_mg_L_end~Site*Sal_treat, sdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "DOC (mg/L)", xlab = "Salinity Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,75))
+        ylim = c(0,69))
 
 boxplot(phenol_perc_init~Site*Sal_treat, sdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "Salinity Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,20))
+        ylim = c(0,28))
 boxplot(phenol_perc_end~Site*Sal_treat, sdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "Salinity Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,20))
+        ylim = c(0,28))
 
 boxplot(SUVA_perc_init~Site*Sal_treat, sdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "SUVA254 per mg/L DOC", xlab = "Salinity Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,1.5))
+        ylim = c(0,1.3))
 boxplot(SUVA_perc_end~Site*Sal_treat, sdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "SUVA254 per mg/L DOC", xlab = "Salinity Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,1.5))
-
+        ylim = c(0,1.3))
+}
 
 
 
@@ -145,12 +152,12 @@ boxplot(phenol_perc_init~Site*pH_treat, pdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,20))
+        ylim = c(0,23))
 boxplot(phenol_perc_end~Site*pH_treat, pdata, 
         col = c("rosybrown3", "white"), border = c("red4", "black"),
         ylab = "Phenolic compounds\n(as percent of DOC)", xlab = "pH Treatment", xaxt = 'n', 
         at = c(1,2,4,5,7,8),
-        ylim = c(0,20))
+        ylim = c(0,23))
 
 boxplot(SUVA_perc_init~Site*pH_treat, pdata,
         col = c("rosybrown3", "white"), border = c("red4", "black"),
@@ -165,27 +172,28 @@ boxplot(SUVA_perc_end~Site*pH_treat, pdata,
 
 
 
-######### MANOVA
+######### ANOVA
 
-#Test for normalcy in the dependent variables
-install.packages(("mvnormtest"))
-library(mvnormtest)
-a <- data$DOC_mg_L_end[which(data$Site == "3")]
-b <- data$DOC_mg_L_end[which(data$Site == "5")]
-U <- t(data.frame(a,b))
-mshapiro.test(U)
+anova <- aov(DOC_mg_L_init ~ Site*Sal_treat, data = sdata)
+TukeyHSD((anova))
 
+##multicomp
+#dht <- glht(anova, linfct = mcp(Sal_treat = "Tukey"))
+#summary(dht)
+library(agricolae)
+intx <- with(sdata, interaction(Site, Sal_treat))
+mod <- aov(phenol_perc_init ~ intx, data = sdata)
+out <- HSD.test(mod,"intx", group=FALSE)
+print(out$comparison)
+out <- HSD.test(mod,"intx", group=TRUE)
+out
 
-### our data for the init case is probably not normally distributed (!)
-
-### MANOVA
-
-doc <- sdata$DOC_mg_L_init
-doc2 <- sdata$DOC_mg_L_end
-
-res.man <- manova(cbind(doc, doc2) ~ Site, data = sdata)
-summary(res.man)
-summary.aov(res.man)
+intx <- with(pdata, interaction(Site, pH_treat))
+mod <- aov(DOC_mg_L_init ~ intx, data = pdata)
+out <- HSD.test(mod,"intx", group=FALSE)
+print(out$comparison)
+out <- HSD.test(mod,"intx", group=TRUE)
+out
 
 
 
