@@ -46,28 +46,95 @@ site5 <- data[which(data$Site == "5"),]
 
 col = c("red", "red", "red", "purple", "purple", "purple",
         "blue", "blue", "blue")
+col = c("red", "purple", "blue","red", "purple", "blue",
+        "red", "purple", "blue")
 
-par(mfrow = c(2,2))
+
+{par(mfrow = c(2,2), mar = c(4,4,2,1))
 boxplot(site3$pH_init~site3$pH_treat*site3$Sal_treat,
-        ylim = c(3,7), border = col)
+        ylim = c(3,7), border = col,
+        main = "Site 3 (acidic)", 
+        ylab = "pH (initial rinse)", xlab = "Salinity Treatment (ppt) ",
+        xaxt = 'n')
+abline(v = 3.5)
+abline(v = 6.5)
+axis(1, c(2,5,8), c("0", "2.5","10"))
+legend(8,7, c("5.5", "7.2", "8.8"), pch = 22, 
+       col = c("red", "purple", "blue"), cex = 0.7, 
+       title = "pH")
 boxplot(site5$pH_init~site5$pH_treat*site5$Sal_treat,
-        ylim = c(3,7), border = col)
+        ylim = c(3,7), border = col, 
+        main = "Site 5 (cypress)", 
+        ylab = " ", xlab = "Salinity Treatment (ppt) ", 
+        xaxt = 'n')
+abline(v = 3.5)
+abline(v = 6.5)
+axis(1, c(2,5,8), c("0", "2.5","10"))
 
-par(mfrow = c(2,2))
+#par(mfrow = c(2,2))
 boxplot(site3$pH_end~site3$pH_treat*site3$Sal_treat,
-        ylim = c(3,7))
+        ylim = c(3,7), border = col, 
+        ylab = "pH (final extract)", xlab = "Salinity Treatment (ppt) ", 
+        xaxt = 'n')
+abline(v = 3.5)
+abline(v = 6.5)
+axis(1, c(2,5,8), c("0", "2.5","10"))
 boxplot(site5$pH_end~site5$pH_treat*site5$Sal_treat,
-        ylim = c(3,7))
+        ylim = c(3,7), border = col, 
+        ylab = " ", xlab = "Salinity treatment (ppt) ", 
+        xaxt = 'n')
+abline(v = 3.5)
+abline(v = 6.5)
+axis(1, c(2,5,8), c("0", "2.5","10"))
+
+}
 #
-print()
 
 
 
 
 
 
+##### salt treatments
 
-
+{par(mfrow = c(2,2), mar = c(4,4,2,1))
+  boxplot(site3$sal_init~site3$pH_treat*site3$Sal_treat,
+          ylim = c(0,11), border = col,
+          main = "Site 3 (acidic)", 
+          ylab = "Sal. (initial rinse)", xlab = "Salinity Treatment (ppt)", 
+          xaxt = 'n')
+  abline(v = 3.5)
+  abline(v = 6.5)
+  axis(1, c(2,5,8), c("0", "2.5","10"))
+  legend(8,6, c("5.5", "7.2", "8.8"), pch = 22, 
+         col = c("red", "purple", "blue"), cex = 0.7, 
+         title = "pH")
+  boxplot(site5$sal_init~site5$pH_treat*site5$Sal_treat,
+          ylim = c(0,11), border = col, 
+          main = "Site 5 (cypress)", 
+          ylab = " ", xlab = "Salinity Treatment (ppt) ", 
+          xaxt = 'n')
+  abline(v = 3.5)
+  abline(v = 6.5)
+  axis(1, c(2,5,8), c("0", "2.5","10"))
+  
+  #par(mfrow = c(2,2))
+  boxplot(site3$sal_end~site3$pH_treat*site3$Sal_treat,
+          ylim = c(0,2), border = col, 
+          ylab = "Sal. (final extract)", xlab = "Salinity Treatment (ppt) ", 
+          xaxt = 'n')
+  abline(v = 3.5)
+  abline(v = 6.5)
+  axis(1, c(2,5,8), c("0", "2.5","10"))
+  boxplot(site5$sal_end~site5$pH_treat*site5$Sal_treat,
+          ylim = c(0,2), border = col, 
+          ylab = " ", xlab = "Salinity treatment (ppt) ", 
+          xaxt = 'n')
+  abline(v = 3.5)
+  abline(v = 6.5)
+  axis(1, c(2,5,8), c("0", "2.5","10"))
+  
+}
 
 
 
