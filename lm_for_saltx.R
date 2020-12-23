@@ -34,6 +34,19 @@ data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
 # SUVA254_end
 # Phenol_mg_L_end
 
+
+## data exploration
+library(corrplot)
+x <- read.csv("chapter4_mater.csv", head = T)
+x <- x[,-4]
+x <- x[,c(6:9, 11:23,25,35)]
+M <- cor(x)
+par(mfrow = c(1,1))
+corrplot(M, method ="color", type = "upper", order = "hclust", 
+         addCoef.col = "black", diag = FALSE, tl.srt = 45)
+
+
+
 mod1 <- lm(DOC_mg_L_end ~ Site*pH_treat*Sal_treat, data = data)
 summary(mod1)
 mod1
