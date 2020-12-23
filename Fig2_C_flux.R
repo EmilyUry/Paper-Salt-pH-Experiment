@@ -29,6 +29,44 @@ data$Sal_treat <- as.factor(data$Sal_treat)
 sdata <- data[which(data$pH_n == 'n'),]
 pdata <- data[which(data$Sal_treat == 0),]
 
+
+
+par(mfrow=c(2,2))
+
+par(mfrow = c(3,1), mar = c(2,2,0.5,1))
+boxplot(C3_s~Site*Sal_treat, sdata,
+        col = c("rosybrown3", "white"), border = c("red4", "black"),
+        ylab = "DOC (mg/L)", xlab = "Salinity Treatment", xaxt = 'n', 
+        at = c(1,2,4,5,7,8),
+        ylim = c(0,1.2))
+axis(1, c(1.5, 4.5, 7.5), c("0", "2.5", "5"))
+boxplot(C3_c~Site*Sal_treat, sdata, 
+        col = c("rosybrown3", "white"), border = c("red4", "black"),
+        ylab = "DOC (mg/L)", xlab = "Salinity Treatment", xaxt = 'n', 
+        at = c(1,2,4,5,7,8),
+        ylim = c(0,14))
+axis(1, c(1.5, 4.5, 7.5), c("0", "2.5", "5"))
+
+library(agricolae)
+intx <- with(sdata, interaction(Site, Sal_treat))
+mod <- aov(C3_s ~ intx, data = sdata)
+out <- HSD.test(mod,"intx", group=FALSE)
+print(out$comparison)
+out <- HSD.test(mod,"intx", group=TRUE)
+out
+
+
+intx <- with(sdata, interaction(Site, Sal_treat))
+mod <- aov(C3_c ~ intx, data = sdata)
+out <- HSD.test(mod,"intx", group=FALSE)
+print(out$comparison)
+out <- HSD.test(mod,"intx", group=TRUE)
+out
+
+
+
+
+
 #C3_s, C3_c, CH4_s, CH4_c, C_end, C21_c
 ### FIGURE 2A
 par(mfrow = c(3,1), mar = c(2,2,0.5,1))
