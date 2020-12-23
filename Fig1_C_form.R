@@ -25,6 +25,31 @@ data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
 data$phenol_perc_init <- data$Phenol_mg_L_init/data$DOC_mg_L_init*100
 data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
 
+
+
+p <- ggplot(data, aes(x=Sal_treat, y=DOC_mg_L_end)) + 
+        geom_boxplot() 
+p + theme_bw() + facet_grid(pH_treat ~ Site)
+
+
+intx <- with(data, interaction(pH_treat, Sal_treat, Site))
+mod <- aov(DOC_mg_L_end ~ intx, data = data)
+out <- HSD.test(mod,"intx", group=FALSE)
+print(out$comparison)
+out <- HSD.test(mod,"intx", group=TRUE)
+out
+
+
+
+
+
+
+
+
+
+
+
+
 sdata <- data[which(data$pH_n == 'n'),]
 pdata <- data[which(data$Sal_treat == 0),]
 
