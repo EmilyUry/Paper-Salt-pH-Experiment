@@ -4,6 +4,8 @@ setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
 
 data <- read.csv("chapter4_mater.csv", head = T)
 head(data)
+plot(data$Phenol_mg_L_init, data$ugC_CH4_gc_hr)
+
 
 data$Site <- as.factor(data$Site)
 data$pH_treat <- as.factor(data$pH_treat)
