@@ -27,7 +27,7 @@ data[11,12] <- NA
 data[11,13] <- NA
   
   
-  
+# treat site fixed categorical variable
   
 model1 <- lmer(DOC_init ~ pH_treat + Sal_treat + (1|Site), data = data, REML = F)
 model2 <- lmer(DOC_init ~ Sal_treat + (1|Site), data = data, REML = F)
@@ -38,4 +38,35 @@ null <- lmer(DOC_init ~ 1 + (1|Site), data = data, REML = F)
 anova(model1, model2)
 anova(model2, null)
 anova(model3, null)
-anova(model4, null)
+anova(model4, model2)
+
+
+
+
+
+
+
+model1 <- lmer(DOC_end ~ pH_treat + Sal_treat + (1|Site), data = data, REML = F)
+model2 <- lmer(DOC_end ~ Sal_treat + (1|Site), data = data, REML = F)
+model3 <- lmer(DOC_end ~ pH_treat + (1|Site), data = data, REML = F)
+model4 <- lmer(DOC_end ~ Sal_treat + Sal_treat*pH_treat + (1|Site), data = data, REML = F)
+
+null <- lmer(DOC_end ~ 1 + (1|Site), data = data, REML = F)
+anova(model1, model2)
+anova(model2, null)
+anova(model3, null)
+anova(model4, model2)
+
+
+
+
+model1 <- lmer(C3_c ~ pH_treat + Sal_treat + (1|Site), data = data, REML = F)
+model2 <- lmer(C3_c ~ Sal_treat + (1|Site), data = data, REML = F)
+model3 <- lmer(C3_c ~ pH_treat + (1|Site), data = data, REML = F)
+model4 <- lmer(C3_c ~ Sal_treat + Sal_treat*pH_treat + (1|Site), data = data, REML = F)
+
+null <- lmer(C3_c ~ 1 + (1|Site), data = data, REML = F)
+anova(model1, model2)
+anova(model2, null)
+anova(model3, null)
+anova(model4, model2)
