@@ -14,6 +14,9 @@ head(data)
 
 data$cmin <- data$ugC.CO2_hr_gc
 
+data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
+data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
+
 #### Site as Categorical and Salt treatment as categorical
 class(data$Site)
 class(data$Sal_treat)
@@ -29,8 +32,14 @@ data$pH_treat <- as.factor(data$pH_treat)
 
 #### Define Response of interest here
 data$response <- data$ugC.CO2_hr_gc ## cmin 3-day rate
+data$response <- data$ugC.CO2_hr_gc_pr ## cmin 3-day rate on a per carbon post rinse
+
 data$response <- data$DOC_mg_L_init  ## doc init
 data$response <- data$DOC_mg_L_end  ## doc end
+
+data$response <- data$phenol_perc_end
+data$response <- data$SUVA_perc_end
+
 data$response <- data$ugC.CO2_hr_gds ## cmin 3-day rater per gds
 data$response <- data$T21_ug_CO2_gc  ## cmin 21 day cumulative (of days measured)
 data$response <- data$C_init ## Carbon content at start (should have no effect of treatments)
