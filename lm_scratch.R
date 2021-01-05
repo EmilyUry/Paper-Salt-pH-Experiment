@@ -38,6 +38,7 @@ data$response <- data$DOC_mg_L_init  ## doc init
 data$response <- data$DOC_mg_L_end  ## doc end
 
 data$response <- data$phenol_perc_end
+data$response <- data$Phenol_mg_L_end
 data$response <- data$SUVA_perc_end
 
 data$response <- data$ugC.CO2_hr_gds ## cmin 3-day rater per gds
