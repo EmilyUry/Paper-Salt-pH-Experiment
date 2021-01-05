@@ -44,7 +44,7 @@ emmip(SiteSal, Salinity ~ Extract | Site, CIs = TRUE, nesting.order = TRUE,
 
 
 
-#### Ph
+#### Phenol and Suva adjusted for DOC
 
 newd$SUVA_per <- newd$SUVA254/newd$DOC_mg_L
 newd$phenol_per <- newd$Phenol_mg_L/newd$DOC_mg_L
@@ -56,7 +56,7 @@ SiteSal <- lm(response ~ Extract*Salinity*Site, data = newd)
 summary(SiteSal)
 # plot
 emmip(SiteSal, Salinity ~ Extract | Site, CIs = TRUE, nesting.order = TRUE, 
-      xlab = "Extract", ylab = "Phenolics (per DOC)")  ## mg phenolics/mg DOC
+      xlab = "Extract", ylab = "Phenolics (mg/ mg DOC)")  ## mg phenolics/mg DOC
 
 ##DOC/Phenol/Suva
 newd$response <- newd$SUVA_per ##  
@@ -64,7 +64,7 @@ SiteSal <- lm(response ~ Extract*Salinity*Site, data = newd)
 summary(SiteSal)
 # plot
 emmip(SiteSal, Salinity ~ Extract | Site, CIs = TRUE, nesting.order = TRUE, 
-      xlab = "Extract", ylab = "SUVA254 ")  ## L / mg DOC / cm (this is the correct units)
+      xlab = "Extract", ylab = "SUVA254 L / mg DOC /cm ")  ## L / mg DOC / cm (this is the correct units)
 
 
 
