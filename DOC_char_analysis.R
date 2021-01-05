@@ -19,8 +19,8 @@ head(data)
 
 data$cmin <- data$ugC.CO2_hr_gc
 
-data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
-data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end*100
+data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end
+data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end
 
 #### Site as Categorical and Salt treatment as categorical
 class(data$Site)
