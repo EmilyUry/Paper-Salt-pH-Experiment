@@ -1,5 +1,7 @@
 
 
+library(emmeans)
+library(ggplot2)
 
 ### DOC characteristics analysis
 
@@ -44,35 +46,35 @@ data$response <- data$SUVA_perc_end
 ## Treatment as continuous site as categorical
 
 ## simple linear
-simple <- lm(phenol_perc_end ~ DOC_mg_L_end, data = data)
-summary(simple)
-par(mfrow = c(2, 2))
-plot(simple)
-d<-data
-d$predicted <- predict(simple)
-d$residuals <- residuals(simple)
-library(dplyr) 
-d %>% select(phenol_perc_end, predicted, residuals) %>% head()
-
-library(ggplot2)
-
-
-ggplot(d, aes(x = DOC_mg_L_end, y = phenol_perc_end)) + geom_point() 
-
-ggplot(d, aes(x = DOC_mg_L_end, y = phenol_perc_end)) + geom_point() +
-  geom_point(aes(y = predicted), shape = 1)
-
-
-ggplot(d, aes(x = DOC_mg_L_end, y = phenol_perc_end)) + 
-  geom_point() +
-  geom_point(aes(y = predicted), shape = 1) + 
-  geom_segment(aes(xend = DOC_mg_L_end, yend = predicted), alpha = 0.5) +
-  theme_bw() +
-  geom_smooth(method = "lm", se = FALSE, color = "lightgray" )
-
-par(mfrow = c(1,1), mar = c (4,5,2,2))
-plot(d$DOC_mg_L_init, d$phenol_perc_end)
-abline(simple)
+# simple <- lm(phenol_perc_end ~ DOC_mg_L_end, data = data)
+# summary(simple)
+# par(mfrow = c(2, 2))
+# plot(simple)
+# d<-data
+# d$predicted <- predict(simple)
+# d$residuals <- residuals(simple)
+# library(dplyr) 
+# d %>% select(phenol_perc_end, predicted, residuals) %>% head()
+# 
+# library(ggplot2)
+# 
+# 
+# ggplot(d, aes(x = DOC_mg_L_end, y = phenol_perc_end)) + geom_point() 
+# 
+# ggplot(d, aes(x = DOC_mg_L_end, y = phenol_perc_end)) + geom_point() +
+#   geom_point(aes(y = predicted), shape = 1)
+# 
+# 
+# ggplot(d, aes(x = DOC_mg_L_end, y = phenol_perc_end)) + 
+#   geom_point() +
+#   geom_point(aes(y = predicted), shape = 1) + 
+#   geom_segment(aes(xend = DOC_mg_L_end, yend = predicted), alpha = 0.5) +
+#   theme_bw() +
+#   geom_smooth(method = "lm", se = FALSE, color = "lightgray" )
+# 
+# par(mfrow = c(1,1), mar = c (4,5,2,2))
+# plot(d$DOC_mg_L_init, d$phenol_perc_end)
+# abline(simple)
 
 
 
@@ -112,7 +114,7 @@ ggplot(data=data, aes(x=sal_init, y = residuals, color = fSite)) + geom_point() 
 
 
 ### SUVA?
-### Here we see that doc is obviously a very strong predictor of phenolic content. 98%
+### Here we see that doc is obviously a very strong predictor of SUVA. 98%
 simple <- lm(SUVA254_end ~ DOC_mg_L_end, data = data)
 summary(simple)
 simple <- lm(SUVA254_end ~ DOC_mg_L_end*fSite, data = data)
