@@ -29,7 +29,7 @@ par(mfrow = c(1,1), mar = c (4,5,2,2))
 boxplot(percent_rinse~Site*Sal_treat, data = data, col = c("gray40","white"), xaxt ='n', xlab = " ", ylab = "Organic C (%) lost in first rinse")
 axis(1, at = c(1.5, 3.5, 5.5), c("0 ppt", "2.5 ppt", "10 ppt"))
 legend("topright", c("Ponzer muck","Hyde loam"), pt.cex = 2, pt.bg = c("gray40", "white"), pch = 22)
-text(c(1,2.2,3,4,5,6), 0.28, c("a", "a", "b", "b", "b", "b"))
+text(c(1,2.2,3,4,5,6), 0.27, c("a", "a", "b", "b", "b", "b"))
 
 
 
