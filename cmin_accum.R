@@ -22,6 +22,8 @@ data$Sal_treat <- as.factor(data$Sal_treat)
 data <- read.csv("cmin_accum_long.csv", head=TRUE)
 
 S3 <- data[which(data$Site == "3"),]
+data$Sal_treat <- as.factor(data$Salt.treatment)
+
 
 
 head(S3)
@@ -39,6 +41,21 @@ p <- ggplot(S5, aes(Day, flux, linetype = Group))
 p +  stat_smooth() + theme_bw() + facet_grid(alk..treatment~.) +
   scale_linetype_manual(values=c("solid", "solid", "solid", "dashed", "dashed", "dashed", "dotted", "dotted", "dotted")) +
   ylim(0,2150)
+
+
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+p <- ggplot(data, aes(Day, flux, linetype = Sal_treat))
+p +  stat_smooth() + theme_bw() + facet_grid(.~Site, labeller = labeller(fSite = labs))
+
+
+
+scale_linetype_manual(values=c("solid", "solid", "solid", "dashed", "dashed", "dashed", "dotted", "dotted", "dotted"))
+
+
+
+
 
 
 
