@@ -25,7 +25,7 @@ data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end
 
 
 data$fSite <- as.factor(data$Site)
-data$Sal_treat <- as.factor(data$Sal_treat)
+#data$Sal_treat <- as.factor(data$Sal_treat)
 data$pH_treat <- as.factor(data$pH_treat)
 
 
@@ -75,7 +75,7 @@ labs <- c("Ponzer muck", "Hyde loam")
 names(labs) <- c("3", "5")
 
 ggplot(data=data, aes(x=Sal_treat, y = DOC_mg_L_end, color = fSite)) + 
-  geom_point() + 
+  geom_point(data = data, aes(x = sal_init, y = DOC_mg_L_end, color = fSite)) + 
   #geom_line() +
   stat_summary(fun=mean, geom="line", aes(group = 1)) +
   #geom_smooth(method = "lm") +
@@ -90,7 +90,7 @@ ggplot(data=data, aes(x=Sal_treat, y = DOC_mg_L_end, color = fSite)) +
 
 #### phenol per doc
 ggplot(data=data, aes(x=Sal_treat, y = phenol_perc_end, color = fSite)) + 
-  geom_point() + 
+  geom_point(data = data, aes(x = sal_init, y = phenol_perc_end, color = fSite)) + 
   #geom_line() +
   stat_summary(fun=mean, geom="line", aes(group = 1)) +
   #geom_smooth(method = "lm") +
@@ -103,7 +103,7 @@ ggplot(data=data, aes(x=Sal_treat, y = phenol_perc_end, color = fSite)) +
 
 #### SUVA per doc
 ggplot(data=data, aes(x=Sal_treat, y = SUVA_perc_end, color = fSite)) + 
-  geom_point() + 
+  geom_point(data = data, aes(x = sal_init, y = SUVA_perc_end, color = fSite)) + 
   #geom_line() +
   stat_summary(fun=mean, geom="line", aes(group = 1)) +
   #geom_smooth(method = "lm") +
@@ -127,7 +127,7 @@ ggplot(data=data, aes(x=Sal_treat, y = SUVA_perc_end, color = fSite)) +
 
 #### phenol per doc
 ggplot(data=data, aes(x=Sal_treat, y = Phenol_mg_L_end, color = fSite)) + 
-  geom_point() + 
+  geom_point(data = data, aes(x = sal_init, y = Phenol_mg_L_end, color = fSite)) + 
   #geom_line() +
   stat_summary(fun=mean, geom="line", aes(group = 1)) +
   #geom_smooth(method = "lm") +
@@ -140,7 +140,7 @@ ggplot(data=data, aes(x=Sal_treat, y = Phenol_mg_L_end, color = fSite)) +
 
 #### SUVA per doc
 ggplot(data=data, aes(x=Sal_treat, y = SUVA254_end, color = fSite)) + 
-  geom_point() + 
+  geom_point(data = data, aes(x = sal_init, y = SUVA254_end, color = fSite)) + 
   #geom_line() +
   stat_summary(fun=mean, geom="line", aes(group = 1)) +
   #geom_smooth(method = "lm") +
@@ -164,9 +164,10 @@ ggplot(data=data, aes(x=Sal_treat, y = SUVA254_end, color = fSite)) +
 ###### SUVA and Phen are correlated w DOC
 #
 ##############################################
+data$fSal_treat <- as.factor(data$Sal_treat)
 labs <- c("Ponzer muck", "Hyde loam")
 names(labs) <- c("3", "5")
-ggplot(data=data, aes(x=DOC_mg_L_end, y = Phenol_mg_L_end, color = Sal_treat, shape = fSite)) + 
+ggplot(data=data, aes(x=DOC_mg_L_end, y = Phenol_mg_L_end, color = fSal_treat, shape = fSite)) + 
   geom_point() + 
   scale_shape_manual(values = c(0,16), name = "", labels = c("Ponzer muck", "Hdye loam")) +
   geom_smooth(method = "lm") +
