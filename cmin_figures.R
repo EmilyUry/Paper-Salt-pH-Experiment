@@ -4,6 +4,9 @@
 
 #### Cmin figures
 
+library(ggplot2)
+
+
 
 
 setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
@@ -75,27 +78,40 @@ anova(simple, intx)   #are the models significantly different.
 ##############################################
 labs <- c("Ponzer muck", "Hyde loam")
 names(labs) <- c("3", "5")
+data$response <- data$ugC.CO2_hr_gc 
 ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) + 
   geom_point() + 
-  geom_smooth(method = "lm") +
+  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab("Cmin (3-day)") + 
+  ylab(expression(paste(mu, 'g C-CO'[2], ' hr'^-1, 'g C'^-1))) + 
   labs(color = "pH")+
   theme(legend.position = "none")
+
+## check stats
+PM <- lm(response ~ sal_init, data = data[which(data$Site == "3"),])
+summary(PM)
+HL <- lm(response ~ sal_init, data = data[which(data$Site == "5"),])
+summary(HL)
+
 
 
 data$response <- data$ugC.CO2_hr_gds
 ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) + 
   geom_point() + 
-  geom_smooth(method = "lm") +
+  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab("Cmin (per gram soil)") + 
+  ylab(expression(paste(mu, 'g C-CO'[2], ' hr'^-1, 'gds'^-1))) + 
   labs(color = "") +
   theme(legend.position = "none")
+
+PM <- lm(response ~ sal_init, data = data[which(data$Site == "3"),])
+summary(PM)
+HL <- lm(response ~ sal_init, data = data[which(data$Site == "5"),])
+summary(HL)
 
 
 #### 21 day cum
@@ -106,7 +122,12 @@ ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab("Cmin 21-day total") + 
+  ylab(expression(paste('Total ', mu, 'g C-CO'[2], ' g C'^-1))) + 
   labs(color = "") +
   theme(legend.position = "none")
+
+PM <- lm(response ~ sal_init, data = data[which(data$Site == "3"),])
+summary(PM)
+HL <- lm(response ~ sal_init, data = data[which(data$Site == "5"),])
+summary(HL)
 
