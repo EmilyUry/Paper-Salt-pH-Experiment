@@ -25,7 +25,7 @@ p1 <- ggplot(data=data, aes(x=Sal_treat, y = pH_init)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) +
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab("pH") + 
+  ylab("Initial Rinsate pH") + 
   scale_shape_manual(values = c(0,16, 3)) +
   theme(legend.title = element_blank(), legend.position = c(.25,.68), legend.direction = "vertical", 
         legend.background = element_blank()) 
@@ -52,7 +52,7 @@ ggplot(data=data, aes(x=Sal_treat, y = pH_init)) +
 
 #### final extract
 data$fSal_treat <- as.factor(data$Sal_treat)
-
+data$fpH_treat <- as.factor(data$pH_treat)
 
 p2 <- ggplot(data=data, aes(x=fSal_treat, y = pH_end)) + 
   #stat_summary(fun=mean, geom="line", aes(group = pH_treat, linetype = pH_treat)) +
@@ -62,7 +62,7 @@ p2 <- ggplot(data=data, aes(x=fSal_treat, y = pH_end)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) +
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab("pH") + 
+  ylab("Final Extract pH") + 
   scale_shape_manual(values = c(0,16, 3)) +
   theme(legend.position = "none")
  
@@ -86,10 +86,10 @@ p3 <- ggplot(data=data, aes(x=fSal_treat, y = sal_end)) +
 
 
 p4 <- ggplot(data=data, aes(x=pH_treat, y = pH_end)) + 
-  geom_boxplot(data = data, aes(group = pH_treat)) + 
+  geom_boxplot(data = data, aes(group = pH_treat:fSal_treat)) + 
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
-  xlab("Salinity Treatment") +
+  xlab("pH Treatment") +
   ylab("Final pH") + 
   theme(legend.position = "none")
 
@@ -98,4 +98,79 @@ grid.arrange(p1, p3, p4, nrow = 3)
 
 
 
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+#### ONE-WAY ANOVA
+
+res.aov <- aov(sal_end ~ fSal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(sal_end ~ fSal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+
+res.aov <- aov(sal_end ~ fSal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "fSal_treat")
+
+
+
+
+
+
+
+#### ONE-WAY ANOVA
+
+res.aov <- aov(pH_end ~ fSal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(pH_end ~ fSal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+
+res.aov <- aov(pH_end ~ fSal_treat*fSite, data = data)
+summary(res.aov)
+
+
+
+
+
+
+
+
+
+
+#### ONE-WAY ANOVA
+
+res.aov <- aov(pH_end ~ fpH_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(pH_end ~ fpH_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+
+res.aov <- aov(pH_end ~ fpH_treat*fSite, data = data)
+summary(res.aov)
+
+
+
+#### interaction bewtween salt and pH treatment exist within each site, but 
+#### I am not really sure what this means or how to explain it. 
+res.aov <- aov(pH_end ~ fSal_treat*fpH_treat, data = Site3)
+summary(res.aov)
+res.aov <- aov(pH_end ~ fSal_treat*fpH_treat, data = Site5)
+summary(res.aov)
 
