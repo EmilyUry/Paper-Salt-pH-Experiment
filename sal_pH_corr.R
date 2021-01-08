@@ -12,7 +12,7 @@ head(data)
 
 data$fSite <- as.factor(data$Site)
 #data$Sal_treat <- as.factor(data$Sal_treat)
-data$pH_treat <- as.factor(data$pH_treat)
+#data$pH_treat <- as.factor(data$pH_treat)
 
 
 
@@ -174,3 +174,25 @@ summary(res.aov)
 res.aov <- aov(pH_end ~ fSal_treat*fpH_treat, data = Site5)
 summary(res.aov)
 
+
+
+
+
+
+
+#### ONE-WAY ANOVA
+
+res.aov <- aov(pH_init ~ fSal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(pH_init ~ fSal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+
+res.aov <- aov(pH_init ~ fSal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "fSal_treat")
