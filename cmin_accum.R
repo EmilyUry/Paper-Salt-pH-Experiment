@@ -11,47 +11,113 @@ library(lubridate)
 
 setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
 
-data <- read.csv("chapter4_mater.csv", head = T)
-head(data)
-
-data$Site <- as.factor(data$Site)
-data$pH_treat <- as.factor(data$pH_treat)
-data$Sal_treat <- as.factor(data$Sal_treat)
-
-
 data <- read.csv("cmin_accum_long.csv", head=TRUE)
-
-S3 <- data[which(data$Site == "3"),]
 data$Sal_treat <- as.factor(data$Salt.treatment)
+data$fSite <- as.factor(data$Site)
 
+### with Salinity labels on the plot
 
-
-head(S3)
-
-p <- ggplot(S3, aes(Day, flux, linetype = Group))
-p +  stat_smooth() + theme_bw() + facet_grid(alk..treatment~.) +
-        scale_linetype_manual(values=c("solid", "solid", "solid", "dashed", "dashed", "dashed", "dotted", "dotted", "dotted"))
-
-
-
-
-S5 <- data[which(data$Site == "5"),]
-head(S5)
-p <- ggplot(S5, aes(Day, flux, linetype = Group))
-p +  stat_smooth() + theme_bw() + facet_grid(alk..treatment~.) +
-  scale_linetype_manual(values=c("solid", "solid", "solid", "dashed", "dashed", "dashed", "dotted", "dotted", "dotted")) +
-  ylim(0,2150)
-
-
+### FIGURE 4 (TOP)
 
 labs <- c("Ponzer muck", "Hyde loam")
 names(labs) <- c("3", "5")
+
+## Left side
+
+ggplot(data, aes(Day, flux, linetype = Sal_treat)) +
+  stat_smooth() + 
+  theme_bw() +
+  facet_grid(.~fSite, labeller = labeller(fSite = labs)) +
+  ylab(expression(paste('C'[mineralization], ' (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +
+  theme(legend.position = "none") +
+  xlim(c(0,27)) +
+  annotate(geom = "text", x = 24, y = 2000, label = "0 ppt") +
+  annotate(geom = "text", x = 24.9, y = 1600, label = "2.5 ppt") +
+  annotate(geom = "text", x = 24.5, y = 1400, label = "10 ppt")
+
+## right side
+ggplot(data, aes(Day, flux, linetype = Sal_treat)) +
+  stat_smooth() + 
+  theme_bw() +
+  facet_grid(.~fSite, labeller = labeller(fSite = labs)) +
+  ylab(expression(paste('C'[mineralization], ' (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +
+  theme(legend.position = "none") +
+  xlim(c(0,27)) +
+  annotate(geom = "text", x = 24, y = 1600, label = "0 ppt") +
+  annotate(geom = "text", x = 24.9, y = 1200, label = "2.5 ppt") +
+  annotate(geom = "text", x = 24.5, y = 900, label = "10 ppt")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### this isn't working for some reason
+T1 <- data.frame(
+  y = c(2000, 1600),
+  fSite = c("3", "5"))
+T2 <- data.frame(
+  y = c(1600, 1200),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  y = c(1400, 900),
+  fSite   = c("3", "5"))
+
+
+ggplot(data, aes(Day, flux, linetype = Sal_treat)) +
+  stat_smooth() + 
+  theme_bw() +
+  facet_grid(.~fSite, labeller = labeller(fSite = labs)) +
+  ylab(expression(paste('C'[mineralization], ' (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +
+  theme(legend.position = "none") +
+  xlim(c(0,27)) 
+  geom_text(data = T1, mapping = aes(x = 24, y = y, label = "0 ppt")) +
+  geom_text(data = T2, mapping = aes(x = 24.9, y = y, label = "2.5 ppt")) +
+  geom_text(data = T3, mapping = aes(x = 24.5, y = y, label = "10 ppt"))
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+### mumbo jumbo below this line
+#######################################################
+
+
+
+
+
+
+## right side
 p <- ggplot(data, aes(Day, flux, linetype = Sal_treat))
-p +  stat_smooth() + theme_bw() + facet_grid(.~Site, labeller = labeller(fSite = labs))
+p +  stat_smooth() + 
+  theme_bw() + 
+  facet_grid(.~Site, labeller = labeller(Site = labs)) +
+  ylab(expression(paste('C'[mineralization], ' (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +
+  theme(legend.position = "none") + 
+  scale_color_discrete(guide = FALSE) +
+  #labs(linetype = "Salinity") +
+  xlim(c(0,28)) +
+  annotate(geom = "text", x = 24, y = 1600, label = "0 ppt") +
+  annotate(geom = "text", x = 24.9, y = 1200, label = "2.5 ppt") +
+  annotate(geom = "text", x = 24.5, y = 900, label = "10 ppt")
 
 
-
-scale_linetype_manual(values=c("solid", "solid", "solid", "dashed", "dashed", "dashed", "dotted", "dotted", "dotted"))
+#scale_linetype_manual(values=c("solid", "solid", "solid", "dashed", "dashed", "dashed", "dotted", "dotted", "dotted"))
 
 
 
