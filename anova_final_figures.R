@@ -84,6 +84,35 @@ TukeyHSD(res.aov)
 res.aov <- aov(response ~ Sal_treat*fSite, data = data)
 summary(res.aov)
 TukeyHSD(res.aov, which = "fSal_treat")
+
+# 
+# 
+# ### Alkalinity --- no sig.difference
+# Adata <- data[which(data$Sal_treat == "0"),]
+# ggplot(data=Adata, aes(x=pH_treat, y = response)) + 
+#   geom_boxplot() +
+#   geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
+#   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+#   theme_bw() +
+#   xlab("Salinity (ppt)") +
+#   ylab(expression(paste('C'[mineralization],' (',mu, 'g C-CO'[2], ' hr'^-1, 'g C'^-1, ')'))) + 
+#   theme(legend.position = "none") + 
+#   ylim(0,11) +
+# ### Stats
+# Site3 <- Adata[which(Adata$Site == "3"),]
+# Site5 <- Adata[which(Adata$Site == "5"),]
+# #### ONE-WAY ANOVA
+# res.aov <- aov(response ~ pH_treat, data = Site3)
+# summary(res.aov)
+# TukeyHSD(res.aov)
+# res.aov <- aov(response ~ pH_treat, data = Site5)
+# summary(res.aov)
+# TukeyHSD(res.aov)
+# ### TWO-WAY ANOVA
+# res.aov <- aov(response ~ pH_treat*fSite, data = data)
+# summary(res.aov)
+# TukeyHSD(res.aov, which = "fSal_treat")
+
 }
 
 
