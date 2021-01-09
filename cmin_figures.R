@@ -85,7 +85,7 @@ ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab(expression(paste(mu, 'g C-CO'[2], ' hr'^-1, 'g C'^-1))) + 
+  ylab(expression(paste('C mineralization (',mu, 'g C-CO'[2], ' hr'^-1, 'g C'^-1, ')'))) + 
   labs(color = "pH")+
   theme(legend.position = "none")
 
@@ -104,7 +104,7 @@ ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab(expression(paste(mu, 'g C-CO'[2], ' hr'^-1, 'gds'^-1))) + 
+  ylab(expression(paste('C mineralization (', mu, 'g C-CO'[2], ' hr'^-1, 'gds'^-1, ')'))) + 
   labs(color = "") +
   theme(legend.position = "none")
 
@@ -114,7 +114,7 @@ HL <- lm(response ~ sal_init, data = data[which(data$Site == "5"),])
 summary(HL)
 
 
-#### 21 day cum
+#### 21 day cum.
 data$response <- data$T21_ug_CO2_gc 
 ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) + 
   geom_point() + 
@@ -122,9 +122,57 @@ ggplot(data=data, aes(x=sal_init, y = response, color = fSite)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab(expression(paste('Total ', mu, 'g C-CO'[2], ' g C'^-1))) + 
-  labs(color = "") +
+  ylab(expression(paste('Total C mineralization (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +   labs(color = "") +
   theme(legend.position = "none")
+
+PM <- lm(response ~ sal_init, data = data[which(data$Site == "3"),])
+summary(PM)
+HL <- lm(response ~ sal_init, data = data[which(data$Site == "5"),])
+summary(HL)
+
+
+
+
+
+### LOI figure 
+
+## LEFT
+
+data$response <- data$C_end
+ggplot(data=data, aes(x=Sal_treat, y = response, color = fSite)) + 
+  geom_boxplot() +
+  #geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("Soil organic matter (%)") +   
+  labs(color = "") +
+  theme(legend.position = "none") +
+  geom_hline(yintercept = 11.2, color = "2", size = 1, linetype = "dashed")
+
+### RIGHT
+
+data$response <- data$C_end
+ggplot(data=data, aes(x=Sal_treat, y = response, color = fSite)) + 
+  geom_boxplot() +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("Soil organic matter (%)") +   
+  labs(color = "") +
+  theme(legend.position = "none") +
+  geom_hline(yintercept = 8.1, color = "5", size = 1, linetype = "dashed")
+
+
+anova <- aov(response ~ Sal_treat, data = data[which(data$Site == "3"),])
+TukeyHSD((anova))
+
+
+anova <- aov(response ~ Sal_treat, data = data[which(data$Site == "5"),])
+TukeyHSD((anova))
 
 PM <- lm(response ~ sal_init, data = data[which(data$Site == "3"),])
 summary(PM)
