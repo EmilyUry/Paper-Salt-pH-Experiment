@@ -4,6 +4,10 @@
 ### salinity and pH are correlated
 
 library(ggplot2)
+library(gridExtra)
+
+
+
 setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
 
 data <- read.csv("chapter4_mater.csv", head = T)
@@ -12,7 +16,7 @@ head(data)
 
 data$fSite <- as.factor(data$Site)
 #data$Sal_treat <- as.factor(data$Sal_treat)
-#data$pH_treat <- as.factor(data$pH_treat)
+data$pH_treat <- as.factor(data$pH_treat)
 
 
 
@@ -25,12 +29,12 @@ p1 <- ggplot(data=data, aes(x=Sal_treat, y = pH_init)) +
   facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) +
   theme_bw() +
   xlab("Salinity (ppt)") +
-  ylab("Initial Rinsate pH") + 
+  ylab("Initial Filtrate pH") + 
   scale_shape_manual(values = c(0,16, 3)) +
   theme(legend.title = element_blank(), legend.position = c(.25,.68), legend.direction = "vertical", 
         legend.background = element_blank()) 
 
-
+p1
 
 ### same figure as above but black and white
 ggplot(data=data, aes(x=Sal_treat, y = pH_init)) + 
