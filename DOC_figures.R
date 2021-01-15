@@ -167,16 +167,19 @@ ggplot(data=data, aes(x=Sal_treat, y = SUVA254_end, color = fSite)) +
 data$fSal_treat <- as.factor(data$Sal_treat)
 labs <- c("Ponzer muck", "Hyde loam")
 names(labs) <- c("3", "5")
-ggplot(data=data, aes(x=DOC_mg_L_end, y = Phenol_mg_L_end, color = fSal_treat, shape = fSite)) + 
+ggplot(data=data, aes(x=DOC_mg_L_end, y = Phenol_mg_L_end, shape = fSal_treat)) + 
   geom_point() + 
-  scale_shape_manual(values = c(0,16), name = "", labels = c("Ponzer muck", "Hdye loam")) +
-  geom_smooth(method = "lm") +
- # facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  scale_shape_manual(values = c(0,16, 3), name = " ", labels = c("0 ppt", "2.5 ppt", "10 ppt")) +
+  geom_smooth(method = "lm", color = "black", size = 0.5) +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   theme(legend.position="top") +
-  xlab("DOC (mg/L)") +
-  ylab("Phenolics (mg/L)") + 
-  scale_color_discrete(name = "", labels = c("0 ppt", "2.5 ppt", "10 ppt"))
+  xlab(expression(paste('DOC (mg · L'^-1, ')'))) +
+  ylab(expression(paste('Phenolics (mg · L' ^-1, ')'))) +
+  theme(legend.title = element_blank(), legend.position = c(.9,.85), legend.direction = "vertical", 
+        legend.background = element_blank()) 
+  
+  #scale_shape_discrete(name = "", labels = c("0 ppt", "2.5 ppt", "10 ppt"))
   #scale_shape_discrete(name = "", labels = c("Ponzer muck", "Hdye loam"))
 
 
@@ -185,17 +188,36 @@ fit <- lm(Phenol_mg_L_end ~ DOC_mg_L_end*fSite, data = data)
 summary(fit)
 
 
-ggplot(data=data, aes(x=DOC_mg_L_end, y = SUVA254_end, color = Sal_treat, shape = fSite)) + 
+
+data$fSal_treat <- as.factor(data$Sal_treat)
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+ggplot(data=data, aes(x=DOC_mg_L_end, y = SUVA254_end, shape = fSal_treat)) + 
   geom_point() + 
-  scale_shape_manual(values = c(0,16), name = "", labels = c("Ponzer muck", "Hdye loam")) +
-  geom_smooth(method = "lm") +
-  # facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  scale_shape_manual(values = c(0,16, 3), name = " ", labels = c("0 ppt", "2.5 ppt", "10 ppt")) +
+  geom_smooth(method = "lm", color = "black", size = 0.5) +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
   theme_bw() +
   theme(legend.position="top") +
-  xlab("DOC (mg/L)") +
-  ylab("UV absorbance at 254 nm") + 
-  scale_color_discrete(name = "", labels = c("0 ppt", "2.5 ppt", "10 ppt"))
-#scale_shape_discrete(name = "", labels = c("Ponzer muck", "Hdye loam"))
+  xlab(expression(paste('DOC (mg · L'^-1, ')'))) +
+  ylab("UV absorbance at 254 nm") +
+  theme(legend.title = element_blank(), legend.position = c(.9,.85), legend.direction = "vertical", 
+        legend.background = element_blank()) 
+
+
+
+
+# ggplot(data=data, aes(x=DOC_mg_L_end, y = SUVA254_end, color = Sal_treat, shape = fSite)) + 
+#   geom_point() + 
+#   scale_shape_manual(values = c(0,16), name = "", labels = c("Ponzer muck", "Hdye loam")) +
+#   geom_smooth(method = "lm") +
+#   # facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+#   theme_bw() +
+#   theme(legend.position="top") +
+#   xlab("DOC (mg/L)") +
+#   ylab("UV absorbance at 254 nm") + 
+#   scale_color_discrete(name = "", labels = c("0 ppt", "2.5 ppt", "10 ppt"))
+# #scale_shape_discrete(name = "", labels = c("Ponzer muck", "Hdye loam"))
 
 
 
