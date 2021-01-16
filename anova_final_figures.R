@@ -86,7 +86,6 @@ summary(res.aov)
 TukeyHSD(res.aov, which = "Sal_treat")
 
 
-
 ### Alkalinity --- no sig.difference
 Adata <- data[which(data$Sal_treat == "0"),]
 ggplot(data=Adata, aes(x=pH_treat, y = response)) +
@@ -785,4 +784,107 @@ grid.arrange(p4, p5, nrow = 2)
 
 
 
+
+
+
+data$response <- data$ugC.CO2_hr_gds ## cmin 3-day rater per gds
+data$response <- data$sal_init ## cmin 3-day rater per gds
+data$response <- data$sal_end ## cmin 3-day rater per gds
+data$response <- data$pH_init ## cmin 3-day rater per gds
+data$response <- data$pH_end ## cmin 3-day rater per gds
+
+
+
+
+### Stats
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+#### ONE-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(response ~ Sal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "Sal_treat")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### ANOVA summary table
+# data$response <- data$ugC.CO2_hr_gc ## cmin 3-day rate
+# data$response <- data$ugC.CO2_hr_gds ## cmin 3-day rater per gds
+# data$response <- data$T21_ug_CO2_gc  ## cmin 21 day cumulative (of days measured)
+# 
+# data$response <- data$C_end ## Carbon content end
+# 
+# data$response <- data$DOC_mg_L_end  ## doc end
+# data$response <- data$Phenol_mg_L_end  ## doc end
+# data$response <- data$SUVA254_end  ## doc end
+# 
+data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end
+data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end
+# data$response <- data$phenol_perc_end
+# data$response <- data$SUVA_perc_end
+
+
+data$Site <- data$fSite
+data$Salinity.Treatment <- data$Sal_treat
+
+data$Salinity_filtrate <- data$sal_init
+data$pH_filtrate <- data$pH_init
+data$Salinity_extract <- data$sal_end
+data$pH_extract <- data$pH_end
+
+data$C.mineralization <- data$ugC.CO2_hr_gc
+data$Total.C.min <- data$T21_ug_CO2_gc
+data$DOC <- data$DOC_mg_L_end
+data$Phenolics <- data$phenol_perc_end
+data$SUVA254 <- data$SUVA254_end
+
+data$Cmin_gds <- data$ugC.CO2_hr_gds ## cmin 3-day rater per gds
+data$Phenol_mg_L <- data$Phenol_mg_L_end  ## doc end
+data$SUVA254_abs <- data$SUVA254_end  ## doc end
+
+
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+
+sal1 <- aov(Salinity_filtrate ~ Treatment, data = Site3)
+sal2 <- aov(Salinity_filtrate ~ Treatment, data = Site5)
+sal3 <- aov(Salinity_filtrate ~ Treatment*Site, data = data)
+
+
+formula<- formula(sal1)
+formula3<- formula(sal3)
+HL <- "Hyde Loam"
+PM <- "Ponzer Muck"
+Ix <- "Site interaction"
+first <- summary(sal1)
+second <- summary(sal2)
+third <- summary(sal3)
+capture.output(c(formula, PM,first, HL, second, Ix, formula3,  third ),file="test.doc")
 
