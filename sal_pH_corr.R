@@ -26,7 +26,7 @@ library(ggpubr)
 
 
 
-p1 <- ggline(data, x = "Sal_treat", y = "pH_init", linetype = "pH_treat", numeric.x.axis = TRUE,
+p1 <- ggline(data, x = "Sal_treat", y = "pH_init", shape = "pH_treat", linetype = "pH_treat", numeric.x.axis = TRUE,
        add = "mean_se", facet.by = "cSite", 
        ylab = "pH (filtrate)", xlab = "Salinity Treatment",
        panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
@@ -34,12 +34,12 @@ p1 <- ggline(data, x = "Sal_treat", y = "pH_init", linetype = "pH_treat", numeri
        legend = c(0.2,0.7), legend.title = "pH Treatment:")
 p1
 
-ggline(data, x = "sal_end", y = "pH_end", linetype = "pH_treat",
-       add = "mean_se", facet.by = "cSite", 
-       ylab = "pH (extract)", xlab = "Salinity Treatment",
-       panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
-       ggtheme = theme_bw(), 
-       legend = c(0.4,0.7), legend.title = "pH Treatment:")
+# ggline(data, x = "sal_end", y = "pH_end", linetype = "pH_treat",
+#        add = "mean_se", facet.by = "cSite", 
+#        ylab = "pH (extract)", xlab = "Salinity Treatment",
+#        panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
+#        ggtheme = theme_bw(), 
+#        legend = c(0.4,0.7), legend.title = "pH Treatment:")
 
 
 
@@ -59,23 +59,25 @@ z$pHt <- c(rep(c("5.5", "5.5", "7.2", "7.2", "8.8", "8.8"), 3))
 
 labs <- c("Ponzer muck", "Hyde loam")
 names(labs) <- c("3", "5")
-ggplot(data, aes(x = sal_end, y = pH_end)) +
+p2 <- ggplot(data, aes(x = sal_end, y = pH_end)) +
   #geom_point(aes(color = group)) +
-  geom_point(data = z, aes(color = pHt)) +
+  geom_point(data = z, aes(shape = pHt)) +
   geom_line(data=z, aes(linetype = pHt)) +
-  geom_errorbarh(data = z, aes(xmin = sal_end - sesal, xmax = sal_end + sesal, y = pH_end, color = pHt, height = 0.01)) +
-  geom_errorbar(data = z, aes(ymin = pH_end - sepH, ymax = pH_end + sepH, x = sal_end, color = pHt)) +
+  geom_errorbarh(data = z, aes(xmin = sal_end - sesal, xmax = sal_end + sesal, y = pH_end, height = 0.01)) +
+  geom_errorbar(data = z, aes(ymin = pH_end - sepH, ymax = pH_end + sepH, x = sal_end)) +
   facet_grid(. ~ Site, labeller = labeller(Site = labs)) +
   xlab("Salinity(ppt)") +
-  ylab("ph (Extract)")
+  ylab("pH (extract)") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+grid.arrange(p1, p2, nrow = 2)
 
 
 
 
 
-summary(data)
-
-
+############### old stuff below this line #####################
 
 
 labs <- c("Ponzer muck", "Hyde loam")
