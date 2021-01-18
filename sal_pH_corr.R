@@ -15,8 +15,66 @@ head(data)
 
 
 data$fSite <- as.factor(data$Site)
-#data$Sal_treat <- as.factor(data$Sal_treat)
+data$Sal_treat <- as.numeric(data$Sal_treat)
 data$pH_treat <- as.factor(data$pH_treat)
+
+data$cSite <- as.character(data$Site)
+
+
+
+library(ggpubr)
+
+
+
+p1 <- ggline(data, x = "Sal_treat", y = "pH_init", linetype = "pH_treat", numeric.x.axis = TRUE,
+       add = "mean_se", facet.by = "cSite", 
+       ylab = "pH (filtrate)", xlab = "Salinity Treatment",
+       panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
+       ggtheme = theme_bw(), 
+       legend = c(0.2,0.7), legend.title = "pH Treatment:")
+p1
+
+ggline(data, x = "sal_end", y = "pH_end", linetype = "pH_treat",
+       add = "mean_se", facet.by = "cSite", 
+       ylab = "pH (extract)", xlab = "Salinity Treatment",
+       panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
+       ggtheme = theme_bw(), 
+       legend = c(0.4,0.7), legend.title = "pH Treatment:")
+
+
+
+group <- c(rep("A",6), rep("B", 6), rep("C", 6), rep("D", 6), rep("E", 6), 
+           rep("F", 6), rep("G", 6), rep("H", 6), rep("I", 6))
+
+data$group <- group
+
+library(plyr)
+z <- ddply(data, .(group, Site), summarise, 
+           pH_e = mean(pH_end), 
+           sal_e = mean(sal_end),
+           sepH = sqrt(var(pH_end))/length(pH_end),
+           sesal= sqrt(var(sal_end))/length(sal_end))
+names(z) <- c("group", "Site", "pH_end", "sal_end", "sepH", "sesal")
+z$pHt <- c(rep(c("5.5", "5.5", "7.2", "7.2", "8.8", "8.8"), 3))
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+ggplot(data, aes(x = sal_end, y = pH_end)) +
+  #geom_point(aes(color = group)) +
+  geom_point(data = z, aes(color = pHt)) +
+  geom_line(data=z, aes(linetype = pHt)) +
+  geom_errorbarh(data = z, aes(xmin = sal_end - sesal, xmax = sal_end + sesal, y = pH_end, color = pHt, height = 0.01)) +
+  geom_errorbar(data = z, aes(ymin = pH_end - sepH, ymax = pH_end + sepH, x = sal_end, color = pHt)) +
+  facet_grid(. ~ Site, labeller = labeller(Site = labs)) +
+  xlab("Salinity(ppt)") +
+  ylab("ph (Extract)")
+
+
+
+
+
+summary(data)
+
 
 
 
@@ -73,6 +131,17 @@ p2 <- ggplot(data=data, aes(x=fSal_treat, y = pH_end)) +
 
 
 grid.arrange(p1, p2, nrow = 2)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
