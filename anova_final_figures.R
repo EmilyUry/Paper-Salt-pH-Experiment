@@ -817,6 +817,65 @@ TukeyHSD(res.aov, which = "Sal_treat")
 
 
 
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+
+data$response <- data$pH_init ## cmin 3-day rater per gds
+
+IpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("pH (initial filtrate)") + 
+  theme(legend.position = "none") + 
+  ylim(4,7)
+
+
+data$response <- data$pH_end ## cmin 3-day rater per gds
+
+FpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("pH (final extract)") +
+  theme(legend.position = "none") + 
+  ylim(4,7)
+
+
+grid.arrange(IpH, FpH, nrow = 2)
+
+
+
+data$response <- data$sal_init ## salinity init
+
+IpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("Salinity (ppt, initial filtrate)") + 
+  theme(legend.position = "none") + 
+  ylim(0, 11)
+
+
+data$response <- data$sal_end ## salinity end
+
+FpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("Salinity (ppt, final extract)") + 
+  theme(legend.position = "none") + 
+  ylim(0,2)
+
+
+grid.arrange(IpH, FpH, nrow = 2)
+
+
+
 
 
 
