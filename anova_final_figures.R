@@ -848,6 +848,65 @@ grid.arrange(IpH, FpH, nrow = 2)
 
 
 
+
+
+data$response <- data$pH_init ## cmin 3-day rater per gds
+
+IpH <- ggplot(data=data, aes(x=pH_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("pH") +
+  ylab("pH (initial filtrate)") + 
+  theme(legend.position = "none") + 
+  ylim(4,7)
+
+
+data$response <- data$pH_end ## 
+
+FpH <- ggplot(data=data, aes(x=pH_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("pH") +
+  ylab("pH (final extract)") +
+  theme(legend.position = "none") + 
+  ylim(4,7)
+
+
+grid.arrange(IpH, FpH, nrow = 2)
+
+
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+#### ONE-WAY ANOVA
+res.aov <- aov(response ~ pH_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(response ~ pH_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "Sal_treat")
+
+
+
+
+
+
+
+
+
+
+
+
+
 data$response <- data$sal_init ## salinity init
 
 IpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
