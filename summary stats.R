@@ -79,4 +79,9 @@ z <- ddply(data, .(Sal_treat, Site), summarise,
            se.cmin = sqrt(var(C_end))/length(C_end))
 z
 
+#### initital filtrate pH
 
+z <- ddply(data, .(Sal_treat, Site), summarise, 
+           cmin = mean(pH_init), 
+           se.cmin = sqrt(var(pH_init))/length(pH_init))
+z
