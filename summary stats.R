@@ -1,5 +1,5 @@
 
-
+library(plyr)
 ## summary
 
 library(ggplot2)
@@ -47,7 +47,7 @@ group <- c(rep("A",6), rep("B", 6), rep("C", 6), rep("D", 6), rep("E", 6),
 
 data$group <- group
 
-library(plyr)
+
 z <- ddply(data, .(Sal_treat, Site), summarise, 
            cmin = mean(ugC.CO2_hr_gc), 
            se.cmin = sqrt(var(ugC.CO2_hr_gc))/length(ugC.CO2_hr_gc))
@@ -70,6 +70,13 @@ z
 z <- ddply(data, .(Sal_treat, Site), summarise, 
            cmin = mean(DOC_mg_L_end), 
            se.cmin = sqrt(var(DOC_mg_L_end))/length(DOC_mg_L_end))
+z
+
+##### C (LOI)
+
+z <- ddply(data, .(Sal_treat, Site), summarise, 
+           cmin = mean(C_end), 
+           se.cmin = sqrt(var(C_end))/length(C_end))
 z
 
 
