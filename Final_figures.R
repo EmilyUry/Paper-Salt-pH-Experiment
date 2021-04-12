@@ -3,11 +3,17 @@
 
 ###Final Figures
 
+## This script generates the final figures for the manuscript
+## for the salt + pH lab experiment
+
 
 
 library(ggplot2)
 library(gridExtra)
 library(viridis)
+library(tidyverse)
+library(lubridate)
+
 
 
 setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
@@ -21,10 +27,73 @@ data$pH_treat <- as.factor(data$pH_treat)
 Site3 <- data[which(data$Site == "3"),]
 Site5 <- data[which(data$Site == "5"),]
 
+### Fig1
+## this figure is the methods diagram, made in ppt
+
+
+### Fig2
+{
+data$cSite <- as.character(data$Site)
+
+tiff(filename = "Fig2.tiff", height=3200, width=4000, units= "px", res=800, compression= "lzw")
+
+ggline(data, x = "Sal_treat", y = "pH_init", shape = "pH_treat", linetype = "pH_treat", numeric.x.axis = TRUE,
+       add = "mean_se", facet.by = "cSite", 
+       ylab = "pH (filtrate)", xlab = "Salinity Treatment",
+       panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
+       ggtheme = theme_bw(), 
+       legend = c(0.2,0.8), legend.title = "pH Treatment:")
+dev.off()
+}
+### Fig 3  - cmin 3 day
 
 
 
-### Fig 4
+### Fig 4 - 21 day cmin accumulation, w Salinity labels on the plot and signficance numbers too
+
+{
+
+data4 <- read.csv("cmin_accum_long.csv", head=TRUE)
+data4$Sal_treat <- as.factor(data4$Salt.treatment)
+#data4$fSite <- as.character(data4$Site)
+data4$fSite <- data4$Site
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+
+T1 <- data.frame(
+  label = c("0 ppt (A)", "0 ppt (A)"),
+  fSite   = c("3","5"),
+  x = c(28, 28), 
+  y = c(2000, 1600))
+T2 <- data.frame(
+  label = c("2.5 ppt (B)", "2.5 ppt (B)"),
+  fSite   = c("3", "5"),
+  x = c(29, 29), 
+  y = c(1550, 1200))
+T3 <- data.frame(
+  label = c("10 ppt (B)", "10 ppt (C)"),
+  fSite   = c("3", "5"),
+  x = c(28.5, 28.5), 
+  y = c(1420, 900))
+
+
+tiff(filename = "Fig4.tiff", height=2400, width=4000, units= "px", res=800, compression= "lzw")
+
+ggplot(data4, aes(Day, flux)) +
+  scale_color_manual(values = c("black", "black", "black")) +
+  stat_smooth(aes(linetype = Sal_treat, color = "black")) + 
+  theme_bw() +
+  facet_grid(.~fSite, labeller = labeller(fSite = labs)) +
+  ylab(expression(paste('C'[mineralization], ' (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +
+  theme(legend.position = "none") +
+  xlim(c(0,34))+
+  geom_text(data = T1, mapping = aes(x=x, y=y, label = label))+
+  geom_text(data = T2, mapping = aes(x=x, y=y, label = label))+
+  geom_text(data = T3, mapping = aes(x=x, y=y, label = label))
+  
+dev.off()
+}
 
 
 ### Fig 5
