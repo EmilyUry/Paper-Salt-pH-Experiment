@@ -9,6 +9,7 @@
 
 
 library(ggplot2)
+library(ggpubr)
 library(gridExtra)
 library(viridis)
 library(tidyverse)
@@ -45,13 +46,84 @@ ggline(data, x = "Sal_treat", y = "pH_init", shape = "pH_treat", linetype = "pH_
        legend = c(0.2,0.8), legend.title = "pH Treatment:")
 dev.off()
 }
+
 ### Fig 3  - cmin 3 day
+{
+data$response <- data$ugC.CO2_hr_gc ## cmin 3-day rate
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("AB", "C"),
+  fSite   = c("3", "5"))
 
 
+tiff(filename = "Fig3.tiff", height=2800, width=2600, units= "px", res=800, compression= "lzw")
 
+ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab(expression(paste('C'[mineralization],' (',mu, 'g C-CO'[2], ' hr'^-1, 'g C'^-1, ')'))) + 
+  theme(legend.position = "none") + 
+  ylim(0,11) +
+  geom_text(data = T1, mapping = aes(x = 1, y = 10, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 10, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 10, label = label))
+
+dev.off()
+
+### Stats
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+#### ONE-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(response ~ Sal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "Sal_treat")
+}
 ### Fig 4 - 21 day cmin accumulation, w Salinity labels on the plot and signficance numbers too
 
 {
+## Stats for 21-day accumulation
+  Site3 <- data[which(data$Site == "3"),]
+  Site5 <- data[which(data$Site == "5"),]
+  
+  #### ONE-WAY ANOVA
+  res.aov <- aov(response ~ Sal_treat, data = Site3)
+  summary(res.aov)
+  TukeyHSD(res.aov)
+  
+  res.aov <- aov(response ~ Sal_treat, data = Site5)
+  summary(res.aov)
+  TukeyHSD(res.aov)
+  
+  
+  ### TWO-WAY ANOVA
+  res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+  summary(res.aov)
+  TukeyHSD(res.aov, which = "fSal_treat")
+  
+## Figure for response curve
+data$response <- data$C_end ## Carbon content end
 
 data4 <- read.csv("cmin_accum_long.csv", head=TRUE)
 data4$Sal_treat <- as.factor(data4$Salt.treatment)
@@ -95,10 +167,159 @@ ggplot(data4, aes(Day, flux)) +
 dev.off()
 }
 
+### Fig 5  -- DOC -- phenolics --- suva 
+{
+####  DOC
 
-### Fig 5
+data$response <- data$DOC_mg_L_end  ## doc end
+  
+  ### Stats
+  Site3 <- data[which(data$Site == "3"),]
+  Site5 <- data[which(data$Site == "5"),]
+  
+  #### ONE-WAY ANOVA
+  res.aov <- aov(response ~ Sal_treat, data = Site3)
+  summary(res.aov)
+  TukeyHSD(res.aov)
+  
+  res.aov <- aov(response ~ Sal_treat, data = Site5)
+  summary(res.aov)
+  TukeyHSD(res.aov)
+  
+  
+  ### TWO-WAY ANOVA
+  res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+  summary(res.aov)
+  TukeyHSD(res.aov, which = "Sal_treat")
+  
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("C", "C"),
+  fSite   = c("3", "5"))
+
+p1 <-  ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab(expression(paste('DOC (mg · L'^-1, ')'))) +   
+  theme(legend.position = "none") + 
+  ylim(0, 80) +
+  geom_text(data = T1, mapping = aes(x = 1, y = 75, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 75, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 75, label = label)) 
+
+######## Phenol  
+data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end
+data$response <- data$phenol_perc_end
+
+### Stats
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+#### ONE-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(response ~ Sal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
 
 
+### TWO-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "Sal_treat")
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("C", "B"),
+  fSite   = c("3", "5"))
+
+p2 <-  ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab(expression(paste('Phenolics (mg · mg DOC'^-1, ')'))) +   
+  theme(legend.position = "none") + 
+  ylim(0, 0.2) +
+  geom_text(data = T1, mapping = aes(x = 1, y = .19, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = .19, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = .19, label = label)) 
+
+##########  SUVA
+data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
+data$response <- data$SUVA_perc_end
+
+### Stats
+Site3 <- data[which(data$Site == "3"),]
+Site5 <- data[which(data$Site == "5"),]
+
+#### ONE-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat, data = Site3)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+res.aov <- aov(response ~ Sal_treat, data = Site5)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+
+### TWO-WAY ANOVA
+res.aov <- aov(response ~ Sal_treat*fSite, data = data)
+summary(res.aov)
+TukeyHSD(res.aov, which = "Sal_treat")
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("C", "C"),
+  fSite   = c("3", "5"))
+
+p3 <-  ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab(expression(paste('SUVA'[254], ' (L· mg DOC'^-1, '· m'^-1, ')'))) +  
+  theme(legend.position = "none") + 
+  ylim(0, 1.4) +
+  geom_text(data = T1, mapping = aes(x = 1, y = 1.35, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 1.35, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 1.35, label = label)) 
+
+
+tiff(filename = "Fig5.tiff", height=5600, width=3400, units= "px", res=800, compression= "lzw")
+ggarrange(p1, p2, p3, ncol =1)
+dev.off()
+
+}
 
 ### Fig6 - black and white
 {
