@@ -36,14 +36,14 @@ Site5 <- data[which(data$Site == "5"),]
 {
 data$cSite <- as.character(data$Site)
 
-tiff(filename = "Fig2.tiff", height=3200, width=4000, units= "px", res=800, compression= "lzw")
+tiff(filename = "Fig2.tiff", height=2600, width=4800, units= "px", res=800, compression= "lzw")
 
 ggline(data, x = "Sal_treat", y = "pH_init", shape = "pH_treat", linetype = "pH_treat", numeric.x.axis = TRUE,
        add = "mean_se", facet.by = "cSite", 
        ylab = "pH (filtrate)", xlab = "Salinity Treatment",
        panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
        ggtheme = theme_bw(), 
-       legend = c(0.2,0.8), legend.title = "pH Treatment:")
+       legend = c(0.3,0.77), legend.title = "pH Treatment:")
 dev.off()
 }
 
@@ -64,7 +64,7 @@ T3 <- data.frame(
   fSite   = c("3", "5"))
 
 
-tiff(filename = "Fig3.tiff", height=2800, width=2600, units= "px", res=800, compression= "lzw")
+tiff(filename = "Fig3.tiff", height=2400, width=3400, units= "px", res=800, compression= "lzw")
 
 ggplot(data=data, aes(x=Sal_treat, y = response)) + 
   geom_boxplot() + 
@@ -100,6 +100,7 @@ res.aov <- aov(response ~ Sal_treat*fSite, data = data)
 summary(res.aov)
 TukeyHSD(res.aov, which = "Sal_treat")
 }
+
 ### Fig 4 - 21 day cmin accumulation, w Salinity labels on the plot and signficance numbers too
 
 {
@@ -346,6 +347,11 @@ dev.off()
 
 ## Fig6 - color
 {
+  
+data$fSal_treat <- as.factor(data$Sal_treat)
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+
 tiff(filename = "Fig6.tiff", height=2600, width=3400, units= "px", res=800, compression= "lzw")
 
 ggplot(data=data, aes(x=DOC_mg_L_end, y = Phenol_mg_L_end, shape = fSal_treat, color = fSal_treat)) + 
@@ -361,14 +367,17 @@ ggplot(data=data, aes(x=DOC_mg_L_end, y = Phenol_mg_L_end, shape = fSal_treat, c
   ylab(expression(paste('Phenolics (mg · L' ^-1, ')'))) +
   theme(legend.title = element_blank(), legend.position = c(.9,.85), legend.direction = "vertical", 
         legend.background = element_blank())  +
-  guides(color = FALSE, fill = FALSE)
+  guides(color = FALSE, fill = FALSE, shape = guide_legend(override.aes = list(color = c("#440154", "#287D8E", "#B8DE29"))))
+
 
 dev.off()
+
 }
 
 #### Fig 7
 {
 data$response <- data$C_end ## Carbon content end
+  
 Site3 <- data[which(data$Site == "3"),]
 Site5 <- data[which(data$Site == "5"),]
 
@@ -401,12 +410,14 @@ T3 <- data.frame(
   fSite   = c("3", "5"))
 
 
-tiff(filename = "Fig7.tiff", height=2800, width=2600, units= "px", res=800, compression= "lzw")
+T4 <- data.frame(x1 = c(0.5,0.5) , x2 = c(3.5,3.5), y1 = c(11.2, 8.1), fsite = c("3", "5"))
 
-ggplot(data=data, aes(x=Sal_treat, y = response)) + 
-  geom_boxplot() + 
-  geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
-  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+
+tiff(filename = "Fig7.tiff",  height=2400, width=3400, units= "px", res=800, compression= "lzw")
+
+ggplot(data = data) + 
+  geom_boxplot(aes(x=Sal_treat, y = response)) + 
+  #geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
   theme_bw() +
   xlab("Salinity (ppt)") +
   ylab("Soil organic matter (%)") +   
@@ -414,11 +425,16 @@ ggplot(data=data, aes(x=Sal_treat, y = response)) +
   ylim(0, 14) +
   geom_text(data = T1, mapping = aes(x = 1, y = 13, label = label)) +
   geom_text(data = T2, mapping = aes(x = 2, y = 13, label = label)) +
-  geom_text(data = T3, mapping = aes(x = 3, y = 13, label = label)) 
+  geom_text(data = T3, mapping = aes(x = 3, y = 13, label = label)) +
+  geom_segment(data = T4, aes(x = x1, xend = x2, 
+                              y = y1, yend = y1), color = c("#BBBBBB99", "white", "white", "#BBBBBB99"), size = c(1, 1, 1, 1.5)) +  
+  geom_segment(data = T4, aes(x = x1, xend = x2, 
+                              y = y1, yend = y1), color = c("black", "white", "white", "black"), linetype = "dashed", size = 0.3) +
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs))
+
+
 dev.off()
 }
-
-
 
 
 ############# Supplemental Figures
@@ -446,7 +462,7 @@ ggplot(data=data, aes(x=DOC_mg_L_end, y = SUVA254_end, shape = fSal_treat, color
   ylab("UV absorbance at 254 nm") +
   theme(legend.title = element_blank(), legend.position = c(.9,.85), legend.direction = "vertical", 
         legend.background = element_blank()) +
-  guides(color = FALSE, fill = FALSE)
+  guides(color = FALSE, fill = FALSE, shape = guide_legend(override.aes = list(color = c("#440154", "#287D8E", "#B8DE29"))))
 dev.off()
 }
 
