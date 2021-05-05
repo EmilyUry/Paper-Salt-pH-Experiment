@@ -85,3 +85,11 @@ z <- ddply(data, .(Sal_treat, Site), summarise,
            cmin = mean(pH_init), 
            se.cmin = sqrt(var(pH_init))/length(pH_init))
 z
+
+
+
+head(data)
+
+
+shapiro.test(data$SM_init)
+shapiro.test(data$pH_init)
