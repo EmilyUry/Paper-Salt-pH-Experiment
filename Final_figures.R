@@ -1,7 +1,7 @@
 
 
 
-###Final Figures
+###Final Figures 
 
 ## This script generates the final figures for the manuscript
 ## for the salt + pH lab experiment
@@ -57,10 +57,10 @@ T1 <- data.frame(
   label = c("A", "A"),
   fSite   = c("3", "5"))
 T2 <- data.frame(
-  label = c("B", "B"),
+  label = c("A", "B"),
   fSite   = c("3", "5"))
 T3 <- data.frame(
-  label = c("AB", "C"),
+  label = c("A", "C"),
   fSite   = c("3", "5"))
 
 
@@ -124,7 +124,7 @@ TukeyHSD(res.aov, which = "Sal_treat")
   TukeyHSD(res.aov, which = "fSal_treat")
   
 ## Figure for response curve
-data$response <- data$C_end ## Carbon content end
+#data$response <- data$C_end ## Carbon content end
 
 data4 <- read.csv("cmin_accum_long.csv", head=TRUE)
 data4$Sal_treat <- as.factor(data4$Salt.treatment)
@@ -440,11 +440,197 @@ dev.off()
 ############# Supplemental Figures
 
 #### Fig S1
-
-
-#### Fig S4
 {
-tiff(filename = "FigS4.tiff", height=2600, width=3400, units= "px", res=800, compression= "lzw") 
+
+data$response <- data$sal_init ## salinity init
+  
+  T1 <- data.frame(
+    label = c("A", "A"),
+    fSite   = c("3", "5"))
+  T2 <- data.frame(
+    label = c("B", "B"),
+    fSite   = c("3", "5"))
+  T3 <- data.frame(
+    label = c("C", "C"),
+    fSite   = c("3", "5"))
+
+IpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("Salinity (ppt, initial filtrate)") + 
+  theme(legend.position = "none") + 
+  ylim(0, 13)+
+  geom_text(data = T1, mapping = aes(x = 1, y = 11.5, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 11.5, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 11.5, label = label))
+
+
+
+data$response <- data$sal_end ## salinity end
+
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+
+FpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("Salinity (ppt, final extract)") + 
+  theme(legend.position = "none") + 
+  ylim(0,2)+
+  geom_text(data = T1, mapping = aes(x = 1, y = 1.7, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 1.7, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 1.7, label = label))
+
+
+
+tiff(filename = "FigS1.tiff", height=3200, width=3400, units= "px", res=800, compression= "lzw")
+grid.arrange(IpH, FpH, nrow = 2)
+dev.off()
+
+}
+
+## Fig S2
+{
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+
+data$response <- data$pH_init ## cmin 3-day rater per gds
+
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+
+IpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("pH (initial filtrate)") + 
+  theme(legend.position = "none") + 
+  ylim(4,7) +
+  geom_text(data = T1, mapping = aes(x = 1, y = 6.8, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 6.8, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 6.8, label = label))
+
+
+data$response <- data$pH_end ## cmin 3-day rater per gds
+T1 <- data.frame(
+  label = c("A", "A"),
+  fSite   = c("3", "5"))
+T2 <- data.frame(
+  label = c("B", "B"),
+  fSite   = c("3", "5"))
+T3 <- data.frame(
+  label = c("C", "C"),
+  fSite   = c("3", "5"))
+
+FpH <- ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("Salinity (ppt)") +
+  ylab("pH (final extract)") +
+  theme(legend.position = "none") + 
+  ylim(4,7) +
+  geom_text(data = T1, mapping = aes(x = 1, y = 6.8, label = label)) +
+  geom_text(data = T2, mapping = aes(x = 2, y = 6.8, label = label)) +
+  geom_text(data = T3, mapping = aes(x = 3, y = 6.8, label = label))
+
+tiff(filename = "FigS2.tiff", height=3200, width=3400, units= "px", res=800, compression= "lzw")
+grid.arrange(IpH, FpH, nrow = 2)
+dev.off()
+}
+
+## Fig S3
+{
+data$response <- data$pH_init ##
+  
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+
+IpH <- ggplot(data=data, aes(x=pH_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("pH") +
+  ylab("pH (initial filtrate)") + 
+  theme(legend.position = "none") + 
+  ylim(4,7)
+IpH
+
+data$response <- data$pH_end ## 
+
+FpH <- ggplot(data=data, aes(x=pH_treat, y = response)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+  theme_bw() +
+  xlab("pH") +
+  ylab("pH (final extract)") +
+  theme(legend.position = "none") + 
+  ylim(4,7)
+
+FpH
+tiff(filename = "FigS3.tiff", height=3200, width=3400, units= "px", res=800, compression= "lzw")
+grid.arrange(IpH, FpH, nrow = 2)
+dev.off()
+}
+
+
+#### Fig S5
+{
+  data$response <- data$ugC.CO2_hr_gds ## cmin 3-day rate
+  
+  labs <- c("Ponzer muck", "Hyde loam")
+  names(labs) <- c("3", "5")
+  T1 <- data.frame(
+    label = c("A", "A"),
+    fSite   = c("3", "5"))
+  T2 <- data.frame(
+    label = c("A", "B"),
+    fSite   = c("3", "5"))
+  T3 <- data.frame(
+    label = c("A", "C"),
+    fSite   = c("3", "5"))
+  
+  
+  tiff(filename = "FigS5.tiff", height=2400, width=3400, units= "px", res=800, compression= "lzw")
+  
+  ggplot(data=data, aes(x=Sal_treat, y = response)) + 
+    geom_boxplot() + 
+    geom_smooth(data=subset(data, fSite == "5"), method = "lm") +
+    facet_grid(. ~ fSite, labeller = labeller(fSite = labs)) + 
+    theme_bw() +
+    xlab("Salinity (ppt)") +
+    ylab(expression(paste('C'[mineralization],' (',mu, 'g C-CO'[2], ' hr'^-1, 'gds'^-1, ')'))) + 
+    theme(legend.position = "none") + 
+    ylim(0,1.25) +
+    geom_text(data = T1, mapping = aes(x = 1, y = 1.2, label = label)) +
+    geom_text(data = T2, mapping = aes(x = 2, y = 1.2, label = label)) +
+    geom_text(data = T3, mapping = aes(x = 3, y = 1.2, label = label))
+  
+  dev.off()
+}
+
+#### Fig S6 Suva vs DOC
+{
+tiff(filename = "FigS6.tiff", height=2600, width=3400, units= "px", res=800, compression= "lzw") 
 
 data$fSal_treat <- as.factor(data$Sal_treat)
 labs <- c("Ponzer muck", "Hyde loam")
