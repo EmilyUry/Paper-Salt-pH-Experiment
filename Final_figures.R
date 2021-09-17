@@ -287,7 +287,8 @@ p1 <-  ggplot(data=data, aes(x=Sal_treat, y = response)) +
   ylim(0, 80) +
   geom_text(data = T1, mapping = aes(x = 1, y = 75, label = label)) +
   geom_text(data = T2, mapping = aes(x = 2, y = 75, label = label)) +
-  geom_text(data = T3, mapping = aes(x = 3, y = 75, label = label)) 
+  geom_text(data = T3, mapping = aes(x = 3, y = 75, label = label)) +
+  labs( tag = "A")
 
 ######## Phenol  
 data$phenol_perc_end <- data$Phenol_mg_L_end/data$DOC_mg_L_end
@@ -335,7 +336,8 @@ p2 <-  ggplot(data=data, aes(x=Sal_treat, y = response)) +
   ylim(0, 0.2) +
   geom_text(data = T1, mapping = aes(x = 1, y = .19, label = label)) +
   geom_text(data = T2, mapping = aes(x = 2, y = .19, label = label)) +
-  geom_text(data = T3, mapping = aes(x = 3, y = .19, label = label)) 
+  geom_text(data = T3, mapping = aes(x = 3, y = .19, label = label)) +
+  labs( tag = "B")
 
 ##########  SUVA
 data$SUVA_perc_end <- data$SUVA254_end/data$DOC_mg_L_end*100
@@ -383,11 +385,12 @@ p3 <-  ggplot(data=data, aes(x=Sal_treat, y = response)) +
   ylim(0, 1.4) +
   geom_text(data = T1, mapping = aes(x = 1, y = 1.35, label = label)) +
   geom_text(data = T2, mapping = aes(x = 2, y = 1.35, label = label)) +
-  geom_text(data = T3, mapping = aes(x = 3, y = 1.35, label = label)) 
+  geom_text(data = T3, mapping = aes(x = 3, y = 1.35, label = label)) +
+  labs( tag = "C")
 
 
 tiff(filename = "Fig5.tiff", height=5600, width=3400, units= "px", res=800, compression= "lzw")
-ggarrange(p1, p2, p3, ncol =1)
+grid.arrange(p1, p2, p3, ncol =1)
 dev.off()
 
 }
