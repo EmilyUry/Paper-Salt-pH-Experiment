@@ -17,7 +17,8 @@ library(lubridate)
 
 
 
-setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
+#setwd("C:/Users/uryem/Dropbox (Duke Bio_Ea)/My data/chapter 4")
+setwd("C:/Users/Emily Ury/OneDrive - University of Waterloo/Desktop/DukeBioDrop_backup/chapter 4")
 
 data <- read.csv("chapter4_mater.csv", head = T)
 head(data)
@@ -44,6 +45,51 @@ ggline(data, x = "Sal_treat", y = "pH_init", shape = "pH_treat", linetype = "pH_
        panel.labs = list( cSite = c("Ponzer muck", "Hyde loam")), 
        ggtheme = theme_bw(), 
        legend = c(0.3,0.77), legend.title = "pH Treatment:")
+dev.off()
+}
+
+
+### Fig2 REVISED
+{
+  data_summary <- function(data, varname, groupnames){
+    require(plyr)
+    summary_func <- function(x, col){
+      c(mean = mean(x[[col]], na.rm=TRUE),
+        sd = sd(x[[col]], na.rm=TRUE),
+        var = var(x[[col]], na.rm=TRUE))
+    }
+    data_sum<-ddply(data, groupnames, .fun=summary_func,
+                    varname)
+    data_sum <- rename(data_sum, c("mean" = varname))
+    return(data_sum)
+  }
+  
+  df2 <- data_summary(data, varname="pH_init", 
+                      groupnames=c("pH_treat", "Sal_treat", "Site"))
+  df3 <- data_summary(data, varname = "sal_init", groupnames=c("pH_treat", "Sal_treat", "Site"))
+  df2$sal_init <- df3$sal_init
+  df2$salty <- as.numeric(as.character(df2$Sal_treat))
+  df2$se <- sqrt(df2$var/3)
+  df2$salt_se <- sqrt(df3$var/3)
+  
+  labs <- c("Ponzer muck", "Hyde loam")
+  names(labs) <- c("3", "5")
+  line <- c(rep(1, 6), rep(3,6), rep(2, 6))
+
+tiff(filename = "Fig2_revised.tiff", height=2600, width=4800, units= "px", res=800, compression= "lzw")
+
+ggplot(df2, aes(x=sal_init, y=pH_init, shape = factor(pH_treat))) + 
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin=pH_init-se, ymax=pH_init+se), width = 0.3, size = 0.7) +
+  #geom_segment(aes(x = sal_init-salt_se, xend=sal_init+salt_se, y = pH_init, yend = pH_init)) +
+  geom_path(linetype = line) +
+  theme_bw() +
+  facet_grid(. ~ Site, labeller = labeller(Site = labs)) +
+  xlab("Salinity Treatment (ppt)") +
+  ylab("pH (filtrate)") +
+  labs(shape = "pH Treatment") +
+  theme(legend.position = c(.3, .75))
+
 dev.off()
 }
 

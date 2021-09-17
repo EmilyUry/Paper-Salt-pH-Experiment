@@ -144,7 +144,7 @@ axis(1, c(2,5,8), c("0", "2.5","10"))
 
 
 ###############
-
+## VERSION 1 - x-axis categorical
 data_summary <- function(data, varname, groupnames){
   require(plyr)
   summary_func <- function(x, col){
@@ -157,17 +157,75 @@ data_summary <- function(data, varname, groupnames){
   return(data_sum)
 }
 
-df2 <- data_summary(data, varname="sal_end", 
-                    groupnames=c("pH_treat", "Sal_treat"))
-# Convert dose to a factor variable
-#df2$dose=as.factor(df2$dose)
-head(df2)
+df2 <- data_summary(data, varname="pH_init", 
+                    groupnames=c("pH_treat", "Sal_treat", "Site"))
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+
+ggplot(df2, aes(x=Sal_treat, y=pH_init, group=pH_treat, shape = pH_treat)) + 
+  geom_pointrange(aes(ymin=pH_init-sd, ymax=pH_init+sd)) +
+  theme_bw() +
+  facet_grid(. ~ Site, labeller = labeller(Site = labs)) +
+  xlab("Salinity Treatment (ppt)") +
+  ylab("pH (filtrate)")
 
 
-supp = c("red", "yellow", "blue")
-library(ggplot2)
-ggplot(df2, aes(x=Sal_treat, y=sal_end, group=pH_treat)) + 
-  geom_pointrange(aes(ymin=sal_end-sd, ymax=sal_end+sd))
+## VERSION 2 - x axis numeric
+
+data_summary <- function(data, varname, groupnames){
+  require(plyr)
+  summary_func <- function(x, col){
+    c(mean = mean(x[[col]], na.rm=TRUE),
+      sd = sd(x[[col]], na.rm=TRUE),
+      var = var(x[[col]], na.rm=TRUE))
+  }
+  data_sum<-ddply(data, groupnames, .fun=summary_func,
+                  varname)
+  data_sum <- rename(data_sum, c("mean" = varname))
+  return(data_sum)
+}
+
+df2 <- data_summary(data, varname="pH_init", 
+                    groupnames=c("pH_treat", "Sal_treat", "Site"))
+df3 <- data_summary(data, varname = "sal_init", groupnames=c("pH_treat", "Sal_treat", "Site"))
+df2$sal_init <- df3$sal_init
+df2$salty <- as.numeric(as.character(df2$Sal_treat))
+df2$se <- sqrt(df2$var/3)
+df2$salt_se <- sqrt(df3$var/3)
+
+labs <- c("Ponzer muck", "Hyde loam")
+names(labs) <- c("3", "5")
+line <- c(rep(1, 6), rep(3,6), rep(2, 6))
+
+ggplot(df2, aes(x=sal_init, y=pH_init, shape = factor(pH_treat))) + 
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin=pH_init-se, ymax=pH_init+se), width = 0.3, size = 0.7) +
+  #geom_segment(aes(x = sal_init-salt_se, xend=sal_init+salt_se, y = pH_init, yend = pH_init)) +
+  geom_path(linetype = line) +
+  theme_bw() +
+  facet_grid(. ~ Site, labeller = labeller(Site = labs)) +
+  xlab("Salinity Treatment (ppt)") +
+  ylab("pH (filtrate)") +
+  labs(shape = "pH Treatment") +
+  theme(legend.position = c(.3, .75))
 
 
+
+
+
+
+
+
+##color
+# ggplot(df2, aes(x=salty, y=pH_init, shape = factor(pH_treat), col = factor(pH_treat))) + 
+#   geom_point(size = 2) +
+#   scale_color_viridis(discrete = TRUE, begin = 0, end =0.85,  option ="D") +
+#   geom_errorbar(aes(ymin=pH_init-se, ymax=pH_init+se), width = 0.3, size = 0.7) +
+#   geom_path(linetype = line) +
+#   theme_bw() +
+#   facet_grid(. ~ Site, labeller = labeller(Site = labs)) +
+#   xlab("Salinity Treatment (ppt)") +
+#   ylab("pH (filtrate)") +
+#   labs(shape = "pH Treatment") +
+#   theme(legend.position = c(.3, .75))
 
