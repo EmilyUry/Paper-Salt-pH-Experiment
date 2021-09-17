@@ -151,6 +151,9 @@ TukeyHSD(res.aov, which = "Sal_treat")
 
 {
 ## Stats for 21-day accumulation
+  
+  data$response <- data$ugC.CO2_hr_gc ## cmin 3-day rate
+  
   Site3 <- data[which(data$Site == "3"),]
   Site5 <- data[which(data$Site == "5"),]
   
@@ -213,6 +216,27 @@ ggplot(data4, aes(Day, flux)) +
   
 dev.off()
 }
+
+
+## Figure 4 COLOR
+
+tiff(filename = "Fig4_color.tiff", height=2400, width=4000, units= "px", res=800, compression= "lzw")
+
+ggplot(data4, aes(Day, flux)) +
+  scale_color_manual(values = c("#481567", "#33638D", "#3CBB75")) +
+  scale_fill_manual(values = c("#6e5693", "#5f8ca1", "#bddc65")) +
+  stat_smooth(aes(linetype = Sal_treat, color = Sal_treat, fill = Sal_treat)) + 
+  theme_bw() +
+  facet_grid(.~fSite, labeller = labeller(fSite = labs)) +
+  ylab(expression(paste('C'[mineralization], ' (', mu, 'g C-CO'[2], ' g C'^-1, ')'))) +
+  theme(legend.position = "none") +
+  xlim(c(0,34))+
+  geom_text(data = T1, mapping = aes(x=x, y=y, label = label))+
+  geom_text(data = T2, mapping = aes(x=x, y=y, label = label))+
+  geom_text(data = T3, mapping = aes(x=x, y=y, label = label))
+
+dev.off()
+
 
 ### Fig 5  -- DOC -- phenolics --- suva 
 {
